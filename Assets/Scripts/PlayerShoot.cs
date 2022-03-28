@@ -4,6 +4,7 @@ public class PlayerShoot : MonoBehaviour {
     [SerializeField] private Transform firePosition = null;
     [SerializeField] private LayerMask wallLayers;
     [SerializeField] private LayerMask enemyLayers;
+    [SerializeField] private LayerMask barrelLayers;
     [SerializeField] private GameObject bulletHolePrefab;
     [SerializeField] private AudioSource gunshotAudioSource;
 
@@ -22,11 +23,25 @@ public class PlayerShoot : MonoBehaviour {
             Debug.Log("Hit enemy: " + hit.collider.name);
 
             EnemyHealth enemyHealth = hit.collider.GetComponent<EnemyHealth>();
-            enemyHealth.TakeDamage(10);
+            if (enemyHealth != null) {
+                enemyHealth.TakeDamage(10);
 
-            if (enemyHealth.IsDead()) {
-                Animator enemyAnimator = hit.collider.GetComponent<Animator>();
-                enemyAnimator.SetBool("Dead", true);
+                if (enemyHealth.IsDead()) {
+                    Animator enemyAnimator = hit.collider.GetComponent<Animator>();
+                    enemyAnimator.SetBool("Dead", true);
+                }
+            } else {
+                EnemyHealthRagdoll enemyHealthRagdoll = hit.collider.GetComponent<EnemyHealthRagdoll>();
+                if (enemyHealthRagdoll != null) {
+                    enemyHealthRagdoll.TakeDamage(10);
+                }
+            }
+
+
+        } else if (Physics.Raycast(firePosition.position, firePosition.forward, out hit, range, barrelLayers)) {
+            Barrel barrel = hit.collider.GetComponent<Barrel>();
+            if (barrel != null) {
+                barrel.Explode();
             }
         } else if (Physics.Raycast(firePosition.position, firePosition.forward, out hit, range, wallLayers)) {
             Debug.Log("Hit wall: " + hit.collider.name);
