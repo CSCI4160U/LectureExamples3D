@@ -15,8 +15,8 @@ TagManager:
   - Enemies
   - Player
   - Barrels
-  - 
-  - 
+  - Interactable
+  - Collectible
   - 
   - 
   - 
