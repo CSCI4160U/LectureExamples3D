@@ -19,4 +19,11 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
 
+    public void Heal(int healAmount) {
+        hp += healAmount;
+
+        if (hp > maxHP) {
+            hp = maxHP;
+        }
+    }
 }

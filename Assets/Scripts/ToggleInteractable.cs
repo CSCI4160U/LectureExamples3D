@@ -3,7 +3,10 @@ using System.Collections;
 
 public class ToggleInteractable : InteractableObject {
     [SerializeField] protected string deactivateText = "Right-click to deactivate";
+    [SerializeField] protected string lockedText = "Cannot open: locked";
+
     [SerializeField] protected bool isActive = false;
+    [SerializeField] protected bool isLocked = false;
 
     [SerializeField] protected bool autoDeactivateAfterDelay = false;
     [SerializeField] protected float autoDeactivateDelay = 8f;
@@ -12,12 +15,23 @@ public class ToggleInteractable : InteractableObject {
     [SerializeField] protected AudioClip deactivateAudioClip;
 
     private AudioSource audioSource;
+
     private void Awake() {
         audioSource = GetComponent<AudioSource>();
     }
 
+    public void Lock() {
+        isLocked = true;
+    }
+
+    public void Unlock() {
+        isLocked = false;
+    }
+
     public override string GetInteractionText() {
-        if (isActive) {
+        if (isLocked) {
+            return lockedText;
+        } else if (isActive) {
             return deactivateText;
         } else {
             return activateText;
@@ -25,6 +39,12 @@ public class ToggleInteractable : InteractableObject {
     }
 
     public override void Interact() {
+        if (isLocked) {
+            // TODO: Play a door handle jiggle sound effect
+
+            return;
+        }
+
         isActive = !isActive;
 
         if (isActive) {
