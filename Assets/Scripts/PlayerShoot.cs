@@ -5,6 +5,8 @@ public class PlayerShoot : MonoBehaviour {
     [SerializeField] private LayerMask wallLayers;
     [SerializeField] private LayerMask enemyLayers;
     [SerializeField] private LayerMask barrelLayers;
+    [SerializeField] private LayerMask energyShieldLayers;
+
     [SerializeField] private GameObject bulletHolePrefab;
     [SerializeField] private AudioSource gunshotAudioSource;
 
@@ -19,7 +21,10 @@ public class PlayerShoot : MonoBehaviour {
     private void Shoot() {
         RaycastHit hit;
 
-        if (Physics.Raycast(firePosition.position, firePosition.forward, out hit, range, enemyLayers)) {
+        if (Physics.Raycast(firePosition.position, firePosition.forward, out hit, range, energyShieldLayers)) {
+            EnergyShield shield = hit.collider.GetComponent<EnergyShield>();
+            shield.RegisterHit(10, hit.point);
+        } else if (Physics.Raycast(firePosition.position, firePosition.forward, out hit, range, enemyLayers)) {
             Debug.Log("Hit enemy: " + hit.collider.name);
 
             EnemyHealth enemyHealth = hit.collider.GetComponent<EnemyHealth>();
